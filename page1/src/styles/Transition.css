@@ -1,0 +1,133 @@
+
+
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Roboto:wght@300;500&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.loader-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh; /* Fixed height for viewport */
+  z-index: 9999;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.loader-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 580%; /* Increased height to fit top and bottom curves */
+  will-change: transform;
+}
+
+
+
+.loader-svg.overlay {
+  z-index: 9998;
+  animation:
+    curtainPush 4.8s cubic-bezier(0.15, 0, 0.24, 1) forwards,
+    curtainInertia 4.8s cubic-bezier(0.15, 0, 0.24, 1) forwards;
+}
+/* Baaki saara CSS same rahega, sirf in areas ko update karein */
+
+.loader-svg.base {
+  z-index: 9997;
+  /* Duration 8 seconds kar di taaki exit ko slow hone ke liye zyada time mile */
+  animation: curtainPush 8s cubic-bezier(0.15, 1, 0.36, 1) forwards;
+}
+
+@keyframes curtainPush {
+  0% {
+    transform: translateY(100%);
+  }
+  /* 1. FAST ENTRY: Sirf 12% time mein screen cover kar lega */
+  12% {
+    transform: translateY(0%);
+  }
+  /* 2. HOLD: Screen par thodi der hold karega */
+  45% {
+    transform: translateY(0%);
+  }
+  /* 3. 10X SLOW EXIT: 35% se lekar 100% tak bahut bada gap hai, 
+     isliye upar jane ki speed bohot kam ho jayegi */
+  100% {
+    transform: translateY(-100%);
+  }
+}
+
+/* Text Timing ko bhi slow exit ke sath sync karna hoga */
+.loader-text-css {
+  /* ... baaki properties same ... */
+  /* Text 0.4s par aayega aur 4s tak ruka rahega */
+  animation:
+    textFlowSync 5s cubic-bezier(0.96, 0, 0.24, 1) 0.2s forwards,
+    textMicroFloat 5s cubic-bezier(0.96, 0, 0.24, 1) 0.2s forwards;
+}
+
+@keyframes textFlowSync {
+  0% { opacity: 0; transform: translate(-50%, 20%); }
+  10% { opacity: 1; transform: translate(-50%, -50%); } /* Reveal fast */
+  60% { opacity: 1; transform: translate(-50%, -50%); } /* Zyada der hold */
+  100% { opacity: 0; transform: translate(-50%, -150%); } /* Exit with curtain */
+}
+@keyframes curtainInertia {
+  0% { filter: brightness(2); }
+  50% { filter: brightness(1.05); }
+  100% { filter: brightness(1); }
+}
+
+/* ================= TEXT LOGIC UPDATED ================= */
+.loader-text-css {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  /* Important: transform translate yaha se hata kar animation mein control karenge */
+  font-family: "Oswald", sans-serif;
+  font-size: 3rem;
+  color: #fffb00;
+  z-index: 10000;
+  opacity: 0;
+  display: flex;
+  gap: 14px;
+  pointer-events: none;
+  
+  /* Curtain 30% par center pahunchta hai (5.5s ka 30% approx 1.6s hota hai) */
+  /* Isliye hum 1.6s ka delay de rahe hain */
+  animation:
+    textFlowSync 2.6s cubic-bezier(0.76, 0, 0.24, 1) 1.6s forwards,
+    textMicroFloat 2.5s cubic-bezier(0.76, 0, 0.24, 1) 1.6s forwards;
+}
+
+@keyframes textFlowSync {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 20%); /* Niche se aayega */
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%); /* Perfect Center */
+  }
+  80% {
+    opacity: 1;
+    transform: translate(-50%, -50%); /* Center mein ruka rahega */
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -120%); /* Curtain ke saath upar nikal jayega */
+  }
+}
+
+@keyframes textMicroFloat {
+  0% { letter-spacing: 2px; }
+  50% { letter-spacing: 8px; } /* Thoda zyada expansion for effect */
+  100% { letter-spacing: 2px; }
+}
+  
